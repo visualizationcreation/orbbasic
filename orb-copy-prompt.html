@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ORB — Branching Exploration for AI</title>
+  <meta name="description" content="Copy the ORB prompt and paste it into ChatGPT or Claude to explore any topic through branching paths." />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f5;
+      --text: #111111;
+      --muted: #6a6a6a;
+      --button: #111111;
+      --button-text: #ffffff;
+      --border: rgba(0,0,0,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101010;
+        --text: #f4f4f2;
+        --muted: #a0a0a0;
+        --button: #f4f4f2;
+        --button-text: #111111;
+        --border: rgba(255,255,255,0.10);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    main {
+      width: min(100%, 520px);
+      text-align: center;
+    }
+
+    .orb-mark {
+      width: 74px;
+      height: 74px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,0.8), transparent 28%),
+        linear-gradient(145deg, rgba(127,127,127,0.12), transparent 60%);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 10vw, 72px);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      font-weight: 800;
+    }
+
+    .tagline {
+      margin: 20px auto 0;
+      max-width: 420px;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    button {
+      margin-top: 34px;
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      background: var(--button);
+      color: var(--button-text);
+      padding: 18px 22px;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 750;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(1px); }
+
+    .hint {
+      margin: 15px auto 0;
+      max-width: 420px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .status {
+      min-height: 24px;
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    details {
+      margin-top: 22px;
+      text-align: left;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 15px 17px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::before {
+      content: "▸ ";
+      color: var(--muted);
+    }
+
+    details[open] summary::before { content: "▾ "; }
+
+    .preview {
+      border-top: 1px solid var(--border);
+      padding: 17px;
+      max-height: 320px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .trust {
+      margin: 13px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 42px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="orb-mark" aria-hidden="true">◉</div>
+
+    <h1>ORB</h1>
+
+    <p class="tagline">
+      A branching way to explore anything with AI.
+    </p>
+
+    <button id="copyButton" type="button">COPY ORB PROMPT</button>
+
+    <p class="hint">
+      Paste into ChatGPT or Claude. Then type <strong>/orb</strong> followed by any topic.
+    </p>
+
+    <div class="status" id="status" aria-live="polite"></div>
+
+    <p class="trust">It's just a plain-text prompt — no install or account access.</p>
+
+    <details>
+      <summary>Preview what you're copying</summary>
+      <div class="preview" id="promptPreview"></div>
+    </details>
+
+    <footer>No signup. No install. Just copy, paste, explore.</footer>
+  </main>
+
+  <script>
+    const orbPrompt = `ORB SYSTEM
+
+When I type /orb followed by a topic, begin a branching exploration of that topic.
+
+CORE BEHAVIOR
+
+1. Start with a concise, interesting overview of the topic.
+
+2. End every response with exactly 10 numbered branches, 1 through 10, representing meaningfully different directions I could explore next.
+
+3. When I reply with a number, continue deeply into that selected branch. Do not restart from the original topic.
+
+4. After exploring the selected branch, generate 10 new numbered branches based specifically on what we just discovered.
+
+5. Continue branching indefinitely while remembering the path we have taken.
+
+6. Branches should be varied and appropriate to the subject. They may include history, hidden details, people, places, mysteries, science, unusual connections, maps or routes, current developments, predictions, primary sources, old photographs, controversies, practical exploration, or other useful directions.
+
+7. Use web research when current facts, obscure history, locations, sources, or verification would improve the exploration.
+
+8. Include useful sources, links, maps, images, studies, or primary materials when they genuinely add value.
+
+9. Make each branch enjoyable to read or listen to. Avoid dry encyclopedia-style dumping. Give enough detail to make the branch worthwhile, but preserve momentum toward the next choice.
+
+10. Preserve the numbered 1–10 branching interface at the end of every exploration response.
+
+11. Treat short numeric replies such as "6", "2", or "10" as branch selections from the most recent ORB menu.
+
+12. Keep track of the exploration path so later branches can connect back to earlier discoveries when useful.
+
+13. When a topic involves a physical place, favor specific roads, landmarks, historical sites, routes, maps, old structures, local history, and things that can actually be visited or located.
+
+14. When a topic benefits from verification, distinguish clearly between documented facts, reasonable inference, and speculation.
+
+15. Do not require me to restate /orb after the first branch. Once an ORB is active, numeric selections continue it.
+
+When this system is first installed, simply respond:
+
+🌐 ORB is ready.
+
+Type /orb followed by anything you want to explore.
+
+Example:
+/orb Rochester, Washington`;
+
+    const button = document.getElementById("copyButton");
+    const status = document.getElementById("status");
+    const promptPreview = document.getElementById("promptPreview");
+    promptPreview.textContent = orbPrompt;
+
+    async function copyPrompt() {
+      try {
+        await navigator.clipboard.writeText(orbPrompt);
+        button.textContent = "COPIED ✓";
+        status.textContent = `Copied — ${orbPrompt.length.toLocaleString()} characters. Now paste it into ChatGPT or Claude.`;
+      } catch (err) {
+        const textarea = document.createElement("textarea");
+        textarea.value = orbPrompt;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+
+        button.textContent = "COPIED ✓";
+        status.textContent = `Copied — ${orbPrompt.length.toLocaleString()} characters. Now paste it into ChatGPT or Claude.`;
+      }
+
+      setTimeout(() => {
+        button.textContent = "COPY ORB PROMPT";
+      }, 2200);
+    }
+
+    button.addEventListener("click", copyPrompt);
+  </script>
+</body>
+</html>
