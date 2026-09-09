@@ -29,18 +29,3 @@ async function copyPrompt(){
 }
 copyButtons.forEach(b=>{b.hidden=false;b.addEventListener('click',copyPrompt);});
 
-// Gentle motion of the shared steel-sphere artwork; no AI or audio calls.
-const motionButton=document.querySelector('#motion');
-const figure=document.querySelector('.orb-figure');
-const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
-let moving=!reducedMotion.matches;
-function updateMotion(){
-  motionButton.textContent=moving?'Pause motion':'Enable motion';
-  motionButton.setAttribute('aria-pressed',String(moving));
-  figure.classList.toggle('motion-paused',!moving||document.hidden);
-}
-motionButton.hidden=false;
-motionButton.addEventListener('click',()=>{moving=!moving;updateMotion();});
-reducedMotion.addEventListener('change',()=>{moving=!reducedMotion.matches;updateMotion();});
-document.addEventListener('visibilitychange',updateMotion);
-updateMotion();
