@@ -5,7 +5,7 @@ A self-contained chat prompt for six-direction exploration and two Spiral Course
 - ORB Learn — Spiral Audio Course
 - ORB Feel & Experience — Guided Audio Journey
 
-The public entry is `index.html`. The canonical prompt is `orb-prompt.txt`; `build.py` embeds it into the preview so copy and preview do not need a network fetch. After editing the prompt or `page-template.html`, run `python build.py`. Publish the resulting HTML together with `app.js`, `style.css`, `favicon.svg`, and `orb-prompt.txt`.
+The public entry is `index.html`. The canonical prompt is `orb-prompt.txt`; `build.py` embeds it into the preview so copy and preview do not need a network fetch. After editing the prompt or `page-template.html`, run `python build.py`. Publish the resulting HTML together with `app.js`, `style.css`, `favicon.svg`, `orb-clouds.jpg`, and `orb-prompt.txt`.
 
 This is a prompt-sharing page, not a hosted AI service or an audio player. It makes no AI requests and stores no user topic. A receiving chat supplies its own model, tools, permissions, and context limits. No local media profile, account credential, voice, or image model is distributed here.
 
@@ -18,3 +18,5 @@ The prompt was manually reviewed against the current ORB navigation and Spiral C
 Browser checks passed for actual clipboard content (normalizing Windows line endings), both copy buttons, an intentionally blocked clipboard with manual selection, the successful legacy-copy branch, text download, a preview matching the canonical text, motion pause/resume, reduced-motion preference, keyboard skip navigation, 1440/390/320-pixel layouts without horizontal overflow, and reading/downloading with JavaScript disabled. Desktop and mobile screenshots were inspected. No JavaScript runtime errors occurred during those tests. The legacy success/failure branches were simulated; modern clipboard copying was exercised against the browser's actual clipboard.
 
 The page does not guarantee permanent memory, automatic research, a generated recording, a clickable chat widget, or a deployed ORB simply from pasting text. Availability of those features is explicitly conditional on the receiving host.
+
+The share page retains the ORB steel-sphere-above-clouds artwork from the archive, with a silver-blue palette and optional gentle motion. Desktop/mobile framing, actual copying, motion pause, and reduced-motion behavior were checked after the theme update.
